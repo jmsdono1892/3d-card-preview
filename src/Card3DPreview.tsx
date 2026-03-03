@@ -187,7 +187,7 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
               transform: 'rotate(45deg)',
               transformOrigin: 'center center',
               opacity: (isHovering || isPlayingIntro) && !isFlipped ? 1 : 0,
-              transition: isPlayingIntro ? 'opacity 0.3s ease' : 'opacity 0.3s ease',
+              transition: isHovering || isPlayingIntro ? 'opacity 0.2s ease-in' : 'opacity 0.8s ease-out',
               pointerEvents: 'none',
             }} />
           </div>
@@ -245,7 +245,7 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
               transform: 'rotate(45deg)',
               transformOrigin: 'center center',
               opacity: isHovering && isFlipped ? 1 : 0,
-              transition: 'opacity 0.3s ease',
+              transition: isHovering ? 'opacity 0.2s ease-in' : 'opacity 0.8s ease-out',
               pointerEvents: 'none',
             }} />
           </div>
