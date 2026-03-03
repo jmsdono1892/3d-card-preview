@@ -135,27 +135,24 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
             }}
           />
           
-          {/* Company name overlay */}
+          {/* Company name overlay - positioned to match card design */}
           {companyName && (
             <div style={{
               position: 'absolute',
-              bottom: '24px',
-              left: '24px',
-              right: '24px',
+              bottom: '18%',
+              right: '6%',
+              fontFamily: '"Basel Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif',
+              fontSize: '14px',
+              fontWeight: 500,
+              color: 'rgba(255, 255, 255, 0.9)',
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase',
+              zIndex: 2,
+              marginLeft: '18px',
+              marginRight: '18px',
               textAlign: 'right',
-              marginLeft: '51.5%',
-              marginRight: '4%',
             }}>
-              <span style={{
-                fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                fontSize: '13px',
-                fontWeight: 500,
-                letterSpacing: '0.08em',
-                color: '#1a1a1a',
-                textTransform: 'uppercase',
-              }}>
-                {companyName}
-              </span>
+              {companyName}
             </div>
           )}
           
