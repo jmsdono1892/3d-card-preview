@@ -80,12 +80,12 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
   return (
     <div style={{
       width: '100%',
-      maxWidth: '768px',
       background: '#ffffff',
-      borderRadius: '12px',
       overflow: 'hidden',
-      boxShadow: '0 4px 24px rgba(0, 0, 0, 0.08)',
       fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
     }}>
       {/* Header */}
       <div style={{
