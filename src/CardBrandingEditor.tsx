@@ -235,7 +235,7 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
                 style={{ 
                   width: '18px', 
                   height: '18px', 
-                  accentColor: '#0066FF',
+                  accentColor: '#7A005D',
                   cursor: 'pointer',
                 }}
               />
@@ -262,7 +262,7 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
                 style={{ 
                   width: '18px', 
                   height: '18px', 
-                  accentColor: '#0066FF',
+                  accentColor: '#7A005D',
                   cursor: 'pointer',
                 }}
               />
@@ -289,7 +289,7 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
                 style={{ 
                   width: '18px', 
                   height: '18px', 
-                  accentColor: '#0066FF',
+                  accentColor: '#7A005D',
                   cursor: 'pointer',
                 }}
               />
@@ -329,7 +329,7 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
                 transition: 'border-color 0.2s ease',
                 boxSizing: 'border-box',
               }}
-              onFocus={(e) => e.target.style.borderColor = '#0066FF'}
+              onFocus={(e) => e.target.style.borderColor = '#7A005D'}
               onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
             />
             <span style={{
@@ -426,17 +426,17 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
             fontSize: '14px',
             fontWeight: 500,
             color: '#ffffff',
-            background: '#0066FF',
+            background: '#7A005D',
             border: 'none',
             borderRadius: '8px',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#0052cc';
+            e.currentTarget.style.background = '#5C0047';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#0066FF';
+            e.currentTarget.style.background = '#7A005D';
           }}
         >
           Save changes
