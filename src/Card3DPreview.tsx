@@ -149,7 +149,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
           borderRadius: '20px',
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
-          overflow: 'hidden',
         }}>
           {/* Card SVG background */}
           <img 
@@ -170,32 +169,38 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
           {/* Dynamic light effect - 45 degree angled, wider spread */}
           <div style={{
             position: 'absolute',
-            inset: '-50%',
+            inset: 0,
             borderRadius: '20px',
-            background: (() => {
-              const pos = isPlayingIntro ? introLightPosition : lightPosition;
-              return `
-                radial-gradient(ellipse 120% 120% at ${pos.x}% ${pos.y}%, 
-                  rgba(255, 255, 255, 0.32) 0%, 
-                  rgba(255, 255, 255, 0.18) 20%, 
-                  rgba(255, 255, 255, 0.08) 40%,
-                  rgba(255, 255, 255, 0.03) 60%,
-                  transparent 85%
-                ),
-                linear-gradient(45deg, 
-                  transparent 0%, 
-                  rgba(255, 255, 255, 0.12) ${pos.x * 0.4 + 20}%, 
-                  rgba(255, 255, 255, 0.06) ${pos.x * 0.6 + 30}%,
-                  transparent 100%
-                )
-              `;
-            })(),
-            transform: 'rotate(45deg)',
-            transformOrigin: 'center center',
-            opacity: (isHovering || isPlayingIntro) && !isFlipped ? 1 : 0,
-            transition: isPlayingIntro ? 'opacity 0.3s ease' : 'opacity 0.3s ease',
-            pointerEvents: 'none',
-          }} />
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              position: 'absolute',
+              inset: '-50%',
+              background: (() => {
+                const pos = isPlayingIntro ? introLightPosition : lightPosition;
+                return `
+                  radial-gradient(ellipse 120% 120% at ${pos.x}% ${pos.y}%, 
+                    rgba(255, 255, 255, 0.32) 0%, 
+                    rgba(255, 255, 255, 0.18) 20%, 
+                    rgba(255, 255, 255, 0.08) 40%,
+                    rgba(255, 255, 255, 0.03) 60%,
+                    transparent 85%
+                  ),
+                  linear-gradient(45deg, 
+                    transparent 0%, 
+                    rgba(255, 255, 255, 0.12) ${pos.x * 0.4 + 20}%, 
+                    rgba(255, 255, 255, 0.06) ${pos.x * 0.6 + 30}%,
+                    transparent 100%
+                  )
+                `;
+              })(),
+              transform: 'rotate(45deg)',
+              transformOrigin: 'center center',
+              opacity: (isHovering || isPlayingIntro) && !isFlipped ? 1 : 0,
+              transition: isPlayingIntro ? 'opacity 0.3s ease' : 'opacity 0.3s ease',
+              pointerEvents: 'none',
+            }} />
+          </div>
 
           {/* Company name overlay */}
           {companyName && (
@@ -227,7 +232,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
           transform: 'rotateY(180deg)',
-          overflow: 'hidden',
         }}>
           {/* Card back SVG */}
           <img 
@@ -248,32 +252,38 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
           {/* Dynamic light effect for back */}
           <div style={{
             position: 'absolute',
-            inset: '-50%',
+            inset: 0,
             borderRadius: '20px',
-            background: (() => {
-              const pos = lightPosition;
-              return `
-                radial-gradient(ellipse 120% 120% at ${100 - pos.x}% ${pos.y}%, 
-                  rgba(255, 255, 255, 0.32) 0%, 
-                  rgba(255, 255, 255, 0.18) 20%, 
-                  rgba(255, 255, 255, 0.08) 40%,
-                  rgba(255, 255, 255, 0.03) 60%,
-                  transparent 85%
-                ),
-                linear-gradient(45deg, 
-                  transparent 0%, 
-                  rgba(255, 255, 255, 0.12) ${(100 - pos.x) * 0.4 + 20}%, 
-                  rgba(255, 255, 255, 0.06) ${(100 - pos.x) * 0.6 + 30}%,
-                  transparent 100%
-                )
-              `;
-            })(),
-            transform: 'rotate(45deg)',
-            transformOrigin: 'center center',
-            opacity: isHovering && isFlipped ? 1 : 0,
-            transition: 'opacity 0.3s ease',
-            pointerEvents: 'none',
-          }} />
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              position: 'absolute',
+              inset: '-50%',
+              background: (() => {
+                const pos = lightPosition;
+                return `
+                  radial-gradient(ellipse 120% 120% at ${100 - pos.x}% ${pos.y}%, 
+                    rgba(255, 255, 255, 0.32) 0%, 
+                    rgba(255, 255, 255, 0.18) 20%, 
+                    rgba(255, 255, 255, 0.08) 40%,
+                    rgba(255, 255, 255, 0.03) 60%,
+                    transparent 85%
+                  ),
+                  linear-gradient(45deg, 
+                    transparent 0%, 
+                    rgba(255, 255, 255, 0.12) ${(100 - pos.x) * 0.4 + 20}%, 
+                    rgba(255, 255, 255, 0.06) ${(100 - pos.x) * 0.6 + 30}%,
+                    transparent 100%
+                  )
+                `;
+              })(),
+              transform: 'rotate(45deg)',
+              transformOrigin: 'center center',
+              opacity: isHovering && isFlipped ? 1 : 0,
+              transition: 'opacity 0.3s ease',
+              pointerEvents: 'none',
+            }} />
+          </div>
         </div>
       </div>
     </div>
