@@ -1,37 +1,17 @@
-import React from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
-export interface Card3DPreviewProps {
-  /** Whether to show metal card styling */
+interface Card3DPreviewProps {
   isMetal?: boolean;
-  /** Company name to display on the card */
   companyName?: string;
-  /** Whether the card is flipped to show the back */
   isFlipped?: boolean;
-  /** Whether the card is currently in a flip animation */
   isFlipping?: boolean;
-  /** URL/path to the front card image */
   cardFrontSrc?: string;
-  /** URL/path to the back card image */
   cardBackSrc?: string;
-  /** Card width in pixels */
   width?: number;
-  /** Card height in pixels */
   height?: number;
 }
 
-/**
- * Card3DPreview - A Mercury-style 3D interactive card component
- * 
- * Features:
- * - 3D tilt effect on hover
- * - Dynamic lighting that follows the cursor
- * - Intro light sweep animation on mount
- * - Flip animation support (controlled via props)
- * - Customizable card images
- */
 const Card3DPreview: React.FC<Card3DPreviewProps> = ({ 
-  // isMetal can be used for future styling variations
-  isMetal: _isMetal = true,
   companyName = 'RIPPLING',
   isFlipped = false,
   isFlipping = false,
@@ -40,21 +20,19 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
   width = 448,
   height = 280,
 }) => {
-  // Suppress unused variable warning - isMetal reserved for future use
-  void _isMetal;
-  const cardRef = React.useRef<HTMLDivElement>(null);
-  const [rotation, setRotation] = React.useState({ x: 0, y: 0 });
-  const [lightPosition, setLightPosition] = React.useState({ x: 50, y: 50 });
-  const [isHovering, setIsHovering] = React.useState(false);
-  const [isPlayingIntro, setIsPlayingIntro] = React.useState(false);
-  const [introLightPosition, setIntroLightPosition] = React.useState({ x: -20, y: -20 });
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [lightPosition, setLightPosition] = useState({ x: 50, y: 50 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [isPlayingIntro, setIsPlayingIntro] = useState(false);
+  const [introLightPosition, setIntroLightPosition] = useState({ x: -20, y: -20 });
 
   // Intro animation - light sweeps across the card at 45 degrees on mount
-  React.useEffect(() => {
+  useEffect(() => {
     const startDelay = setTimeout(() => {
       setIsPlayingIntro(true);
       
-      const duration = 1800; // Animation duration in ms
+      const duration = 1800;
       const startTime = performance.now();
       const startX = -30;
       const startY = -30;
@@ -65,7 +43,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
-        // Ease-in-out cubic for smooth acceleration and deceleration
         const eased = progress < 0.5 
           ? 4 * progress * progress * progress 
           : 1 - Math.pow(-2 * progress + 2, 3) / 2;
@@ -78,7 +55,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
         if (progress < 1) {
           requestAnimationFrame(animate);
         } else {
-          // Fade out after animation completes
           setTimeout(() => {
             setIsPlayingIntro(false);
           }, 400);
@@ -86,13 +62,12 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
       };
       
       requestAnimationFrame(animate);
-    }, 600); // Initial delay before animation starts
+    }, 600);
     
     return () => clearTimeout(startDelay);
   }, []);
 
-  const handleMouseMove = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    // Disable hover effects while flipping
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current || isFlipping) return;
     const rect = cardRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -105,13 +80,11 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
     setLightPosition({ x: lightX, y: lightY });
   }, [isFlipping]);
 
-  const handleMouseEnter = React.useCallback(() => {
-    // Don't trigger hover state while flipping
+  const handleMouseEnter = useCallback(() => {
     if (!isFlipping) setIsHovering(true);
   }, [isFlipping]);
   
-  const handleMouseLeave = React.useCallback(() => {
-    // Only reset if not flipping
+  const handleMouseLeave = useCallback(() => {
     if (!isFlipping) {
       setIsHovering(false);
       setRotation({ x: 0, y: 0 });
@@ -119,7 +92,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
     }
   }, [isFlipping]);
 
-  // Calculate the base flip rotation
   const flipRotation = isFlipped ? 180 : 0;
   
   return (
@@ -150,7 +122,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
         }}>
-          {/* Card SVG background */}
           <img 
             src={cardFrontSrc}
             alt="Card Front"
@@ -164,7 +135,31 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
             }}
           />
           
-          {/* Dynamic light effect - 45 degree angled, wider spread */}
+          {/* Company name overlay */}
+          {companyName && (
+            <div style={{
+              position: 'absolute',
+              bottom: '24px',
+              left: '24px',
+              right: '24px',
+              textAlign: 'right',
+              marginLeft: '51.5%',
+              marginRight: '4%',
+            }}>
+              <span style={{
+                fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                fontSize: '13px',
+                fontWeight: 500,
+                letterSpacing: '0.08em',
+                color: '#1a1a1a',
+                textTransform: 'uppercase',
+              }}>
+                {companyName}
+              </span>
+            </div>
+          )}
+          
+          {/* Dynamic light effect */}
           <div style={{
             position: 'absolute',
             inset: 0,
@@ -199,27 +194,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
               pointerEvents: 'none',
             }} />
           </div>
-
-          {/* Company name overlay */}
-          {companyName && (
-            <div style={{
-              position: 'absolute',
-              bottom: '18%',
-              right: '6%',
-              fontFamily: '"Basel Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif',
-              fontSize: '14px',
-              fontWeight: 500,
-              color: 'rgba(255, 255, 255, 0.9)',
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-              zIndex: 2,
-              marginLeft: '18px',
-              marginRight: '18px',
-              textAlign: 'right',
-            }}>
-              {companyName}
-            </div>
-          )}
         </div>
 
         {/* Back face */}
@@ -230,7 +204,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
           WebkitBackfaceVisibility: 'hidden',
           transform: 'rotateY(180deg)',
         }}>
-          {/* Card back SVG */}
           <img 
             src={cardBackSrc}
             alt="Card Back"

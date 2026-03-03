@@ -1,9 +1,9 @@
 {
-  "name": "3d-card-preview",
+  "name": "card-branding-editor",
   "private": true,
   "version": "1.0.0",
+  "description": "A beautiful card branding editor with 3D interactive preview",
   "type": "module",
-  "description": "A Mercury-style 3D interactive card preview component with dynamic lighting, flip animation, and hover effects",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

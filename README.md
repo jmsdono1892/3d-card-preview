@@ -1,90 +1,91 @@
-# 3D Card Preview Component
+# Card Branding Editor
 
-A 3D interactive card preview component built with React and TypeScript.
+A beautiful, interactive card branding editor component with 3D card preview, dynamic lighting effects, and flip animation.
+
+![Card Branding Editor](https://via.placeholder.com/768x500?text=Card+Branding+Editor)
 
 ## Features
 
-- **3D Tilt Effect**: Card tilts in 3D space following your cursor
-- **Dynamic Lighting**: Light follows cursor with a 45-degree angled gradient
-- **Intro Animation**: Light sweeps across the card on mount
-- **Flip Animation**: Smooth flip to reveal card back with polished easing
-- **Customizable**: Card images, company name, and dimensions
-
-## Demo
-
-![3D Card Preview](./demo.gif)
+- **3D Interactive Card Preview** - Hover to see realistic 3D tilt and dynamic lighting
+- **Flip Animation** - Smooth card flip to view front/back
+- **Intro Animation** - Light sweep animation on load
+- **Business Name Options**:
+  - Same name for all entities
+  - Different name per entity
+  - No business name
+- **Live Preview** - See changes reflected on the card in real-time
+- **Character Limit** - 21 character max with counter
 
 ## Installation
 
 ```bash
 npm install
+```
+
+## Development
+
+```bash
 npm run dev
 ```
 
 ## Usage
 
 ```tsx
-import Card3DPreview from './Card3DPreview';
-import FlipButton from './FlipButton';
-import { useState, useCallback } from 'react';
+import { CardBrandingEditor } from './components';
 
 function App() {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isFlipping, setIsFlipping] = useState(false);
-
-  const handleFlip = useCallback(() => {
-    if (isFlipping) return;
-    setIsFlipping(true);
-    setIsFlipped(prev => !prev);
-    setTimeout(() => setIsFlipping(false), 800);
-  }, [isFlipping]);
+  const handleSave = (entities, cardDesign) => {
+    console.log('Saved:', { entities, cardDesign });
+  };
 
   return (
-    <div style={{ position: 'relative' }}>
-      <Card3DPreview 
-        companyName="ACME CORP"
-        isFlipped={isFlipped}
-        isFlipping={isFlipping}
-        cardFrontSrc="/card-front.svg"
-        cardBackSrc="/card-back.svg"
-      />
-      <FlipButton 
-        isFlipped={isFlipped}
-        onClick={handleFlip}
-      />
-    </div>
+    <CardBrandingEditor
+      initialEntities={[
+        { id: '1', name: 'Acme Corporation', alias: 'ACME CORP' },
+        { id: '2', name: 'TechStart Inc', alias: 'TECHSTART' },
+      ]}
+      onSave={handleSave}
+      onCancel={() => console.log('Cancelled')}
+      cardFrontSrc="/card-front.svg"
+      cardBackSrc="/card-back.svg"
+    />
   );
 }
 ```
 
 ## Props
 
-### Card3DPreview
+### CardBrandingEditor
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `isMetal` | `boolean` | `true` | Whether to show metal card styling |
-| `companyName` | `string` | `'RIPPLING'` | Company name to display on the card |
-| `isFlipped` | `boolean` | `false` | Whether the card is flipped to show the back |
-| `isFlipping` | `boolean` | `false` | Whether the card is currently in a flip animation |
-| `cardFrontSrc` | `string` | `'/card-front.svg'` | URL/path to the front card image |
-| `cardBackSrc` | `string` | `'/card-back.svg'` | URL/path to the back card image |
-| `width` | `number` | `448` | Card width in pixels |
-| `height` | `number` | `280` | Card height in pixels |
+| `initialEntities` | `Entity[]` | `[{ id: '1', name: 'Acme Corporation', alias: 'ACME CORP' }]` | Initial entities with names and aliases |
+| `onSave` | `(entities: Entity[], cardDesign: 'name_only' \| 'name_company') => void` | - | Callback when save is clicked |
+| `onCancel` | `() => void` | - | Callback when cancel is clicked |
+| `cardFrontSrc` | `string` | `'/card-front.svg'` | Path to card front SVG |
+| `cardBackSrc` | `string` | `'/card-back.svg'` | Path to card back SVG |
 
-### FlipButton
+### Entity Type
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isFlipped` | `boolean` | - | Whether the card is currently flipped |
-| `onClick` | `() => void` | - | Click handler to toggle flip state |
-| `variant` | `'light' \| 'dark'` | `'dark'` | Button variant for different backgrounds |
+```typescript
+interface Entity {
+  id: string;
+  name: string;    // Full company name (displayed in form)
+  alias: string;   // Name printed on card (max 21 chars)
+}
+```
 
 ## Card Assets
 
-Place your card SVG files in the `public` folder:
+Place your card SVG assets in the `public/` folder:
 - `public/card-front.svg` - Front of the card
 - `public/card-back.svg` - Back of the card
+
+## Build
+
+```bash
+npm run build
+```
 
 ## License
 
