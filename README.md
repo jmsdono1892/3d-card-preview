@@ -1,6 +1,6 @@
 # 3D Card Preview Component
 
-A Mercury-style 3D interactive card preview component built with React and TypeScript.
+A 3D interactive card preview component built with React and TypeScript.
 
 ## Features
 
