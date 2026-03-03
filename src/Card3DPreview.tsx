@@ -30,7 +30,8 @@ export interface Card3DPreviewProps {
  * - Customizable card images
  */
 const Card3DPreview: React.FC<Card3DPreviewProps> = ({ 
-  isMetal = true,
+  // isMetal can be used for future styling variations
+  isMetal: _isMetal = true,
   companyName = 'RIPPLING',
   isFlipped = false,
   isFlipping = false,
@@ -39,6 +40,8 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
   width = 448,
   height = 280,
 }) => {
+  // Suppress unused variable warning - isMetal reserved for future use
+  void _isMetal;
   const cardRef = React.useRef<HTMLDivElement>(null);
   const [rotation, setRotation] = React.useState({ x: 0, y: 0 });
   const [lightPosition, setLightPosition] = React.useState({ x: 50, y: 50 });
@@ -162,7 +165,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
               objectFit: 'cover',
               borderRadius: '20px',
               pointerEvents: 'none',
-              imageRendering: 'high-quality',
             }}
           />
           
@@ -245,7 +247,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
               objectFit: 'cover',
               borderRadius: '20px',
               pointerEvents: 'none',
-              imageRendering: 'high-quality',
             }}
           />
           
