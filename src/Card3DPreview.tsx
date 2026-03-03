@@ -133,7 +133,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
           position: 'relative',
           width: '100%',
           height: '100%',
-          borderRadius: '20px',
           cursor: 'pointer',
           transformStyle: 'preserve-3d',
           transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y + flipRotation}deg)`,
@@ -142,14 +141,12 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
             : isHovering 
               ? 'transform 0.1s ease-out' 
               : 'transform 0.5s ease-out',
-          boxShadow: 'none',
         }}
       >
         {/* Front face */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          borderRadius: '20px',
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
         }}>
@@ -162,8 +159,7 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
               inset: 0,
               width: '100%',
               height: '100%',
-              objectFit: 'cover',
-              borderRadius: '20px',
+              objectFit: 'fill',
               pointerEvents: 'none',
             }}
           />
@@ -230,7 +226,6 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
         <div style={{
           position: 'absolute',
           inset: 0,
-          borderRadius: '20px',
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
           transform: 'rotateY(180deg)',
@@ -244,8 +239,7 @@ const Card3DPreview: React.FC<Card3DPreviewProps> = ({
               inset: 0,
               width: '100%',
               height: '100%',
-              objectFit: 'cover',
-              borderRadius: '20px',
+              objectFit: 'fill',
               pointerEvents: 'none',
             }}
           />
