@@ -38,6 +38,9 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
   const [tempCardDesign, setTempCardDesign] = useState<'name_only' | 'name_company'>('name_company');
   const [brandingMode, setBrandingMode] = useState<'same' | 'different'>('same');
   const [previewEntityId, setPreviewEntityId] = useState<string | null>(null);
+  
+  // Validation state
+  const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set());
 
   const handleFlip = useCallback(() => {
     if (isCardFlipping) return;
@@ -53,8 +56,34 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
   }, []);
 
   const handleSave = useCallback(() => {
+    // Validate required fields
+    const newInvalidFields = new Set<string>();
+    
+    if (tempCardDesign === 'name_company') {
+      if (brandingMode === 'same') {
+        // Check if the shared name is empty
+        if (!tempEntities[0]?.alias?.trim()) {
+          newInvalidFields.add('shared-name');
+        }
+      } else {
+        // Check each entity's alias
+        tempEntities.forEach(entity => {
+          if (!entity.alias?.trim()) {
+            newInvalidFields.add(entity.id);
+          }
+        });
+      }
+    }
+    
+    setInvalidFields(newInvalidFields);
+    
+    // If there are invalid fields, don't submit
+    if (newInvalidFields.size > 0) {
+      return;
+    }
+    
     onSave?.(tempEntities, tempCardDesign);
-  }, [tempEntities, tempCardDesign, onSave]);
+  }, [tempEntities, tempCardDesign, brandingMode, onSave]);
 
   const handleCancel = useCallback(() => {
     setTempEntities(initialEntities);
@@ -231,6 +260,7 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
                 onChange={() => {
                   setTempCardDesign('name_company');
                   setBrandingMode('same');
+                  setInvalidFields(new Set());
                 }}
                 style={{ 
                   width: '18px', 
@@ -258,6 +288,7 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
                 onChange={() => {
                   setTempCardDesign('name_company');
                   setBrandingMode('different');
+                  setInvalidFields(new Set());
                 }}
                 style={{ 
                   width: '18px', 
@@ -285,6 +316,7 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
                 onChange={() => {
                   setTempCardDesign('name_only');
                   setBrandingMode('same');
+                  setInvalidFields(new Set());
                 }}
                 style={{ 
                   width: '18px', 
@@ -305,10 +337,10 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
               display: 'block',
               fontSize: '14px',
               fontWeight: 500,
-              color: '#1a1a1a',
+              color: invalidFields.has('shared-name') ? '#DC2626' : '#1a1a1a',
               marginBottom: '8px',
             }}>
-              Name on card
+              Name on card {invalidFields.has('shared-name') && <span style={{ color: '#DC2626', fontWeight: 400 }}>— Required</span>}
             </label>
             <input
               type="text"
@@ -316,6 +348,14 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
               onChange={(e) => {
                 const newAlias = e.target.value;
                 setTempEntities(tempEntities.map(ent => ({ ...ent, alias: newAlias })));
+                // Clear error when user starts typing
+                if (newAlias.trim() && invalidFields.has('shared-name')) {
+                  setInvalidFields(prev => {
+                    const next = new Set(prev);
+                    next.delete('shared-name');
+                    return next;
+                  });
+                }
               }}
               placeholder="Enter business name"
               maxLength={21}
@@ -323,19 +363,28 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
                 width: '100%',
                 padding: '10px 12px',
                 fontSize: '14px',
-                border: '1px solid #d1d5db',
+                border: `1px solid ${invalidFields.has('shared-name') ? '#DC2626' : '#d1d5db'}`,
                 borderRadius: '8px',
                 outline: 'none',
-                transition: 'border-color 0.2s ease',
+                transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
                 boxSizing: 'border-box',
+                boxShadow: invalidFields.has('shared-name') ? '0 0 0 3px rgba(220, 38, 38, 0.1)' : 'none',
               }}
-              onFocus={(e) => e.target.style.borderColor = '#7A005D'}
-              onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+              onFocus={(e) => {
+                if (!invalidFields.has('shared-name')) {
+                  e.target.style.borderColor = '#7A005D';
+                }
+              }}
+              onBlur={(e) => {
+                if (!invalidFields.has('shared-name')) {
+                  e.target.style.borderColor = '#d1d5db';
+                }
+              }}
             />
             <span style={{
               display: 'block',
               fontSize: '12px',
-              color: '#6b7280',
+              color: invalidFields.has('shared-name') ? '#DC2626' : '#6b7280',
               marginTop: '4px',
               textAlign: 'right',
             }}>
@@ -354,37 +403,51 @@ const CardBrandingEditor: React.FC<CardBrandingEditorProps> = ({
             flexDirection: 'column',
             gap: '16px',
           }}>
-            {tempEntities.map(entity => (
-              <div key={entity.id}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  color: '#1a1a1a',
-                  marginBottom: '8px',
-                }}>
-                  Name on card for {entity.name}
-                </label>
-                <input
-                  type="text"
-                  value={entity.alias}
-                  onChange={(e) => handleEntityAliasChange(entity.id, e.target.value)}
-                  onFocus={() => setPreviewEntityId(entity.id)}
-                  placeholder="Enter company name"
-                  maxLength={21}
-                  style={{
-                    width: '100%',
-                    padding: '10px 12px',
+            {tempEntities.map(entity => {
+              const hasError = invalidFields.has(entity.id);
+              return (
+                <div key={entity.id}>
+                  <label style={{
+                    display: 'block',
                     fontSize: '14px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    outline: 'none',
-                    transition: 'border-color 0.2s ease',
-                    boxSizing: 'border-box',
-                  }}
-                />
-              </div>
-            ))}
+                    fontWeight: 500,
+                    color: hasError ? '#DC2626' : '#1a1a1a',
+                    marginBottom: '8px',
+                  }}>
+                    Name on card for {entity.name} {hasError && <span style={{ color: '#DC2626', fontWeight: 400 }}>— Required</span>}
+                  </label>
+                  <input
+                    type="text"
+                    value={entity.alias}
+                    onChange={(e) => {
+                      handleEntityAliasChange(entity.id, e.target.value);
+                      // Clear error when user starts typing
+                      if (e.target.value.trim() && hasError) {
+                        setInvalidFields(prev => {
+                          const next = new Set(prev);
+                          next.delete(entity.id);
+                          return next;
+                        });
+                      }
+                    }}
+                    onFocus={() => setPreviewEntityId(entity.id)}
+                    placeholder="Enter company name"
+                    maxLength={21}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      fontSize: '14px',
+                      border: `1px solid ${hasError ? '#DC2626' : '#d1d5db'}`,
+                      borderRadius: '8px',
+                      outline: 'none',
+                      transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+                      boxSizing: 'border-box',
+                      boxShadow: hasError ? '0 0 0 3px rgba(220, 38, 38, 0.1)' : 'none',
+                    }}
+                  />
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
